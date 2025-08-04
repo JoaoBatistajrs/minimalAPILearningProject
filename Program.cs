@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddInfraStrucuture(builder.Configuration);
+builder.Services.AddServices(builder.Configuration);
 
 //builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-// Configurar autenticação JWT
+// Configure JWT authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -50,6 +51,7 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.MapUserEndpoints();
+app.MapCarEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
 
