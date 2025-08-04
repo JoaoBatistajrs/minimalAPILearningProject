@@ -11,4 +11,5 @@ public class CarsContext : DbContext
     }
 
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Car> Cars { get; set; } = null!;
 }

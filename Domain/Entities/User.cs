@@ -11,13 +11,13 @@ public class User
 
     [Required]
     [StringLength(250)]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = default!;
 
     [StringLength(50)]
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = default!;
 
     [StringLength(10)]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } = default!;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
