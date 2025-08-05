@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddDbContext<CarsContext>(options => options.UseNpgsql(configuration.GetConnectionString("CarsApiConnectionString")));
 
         services.AddScoped<IEntityRepository<Car>, EntityRepository<Car>>();
+        services.AddScoped<IEntityRepository<User>, EntityRepository<User>>();
 
         return services;
     }
@@ -22,6 +23,9 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ICarsService, CarsService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPasswordService, PasswordService>();
+        services.AddScoped<IJwtService, JwtService>();
 
         return services;
     }

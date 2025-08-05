@@ -1,4 +1,9 @@
-﻿namespace MinimalAPI.Endpoints
+﻿using Microsoft.AspNetCore.Mvc;
+using MinimalAPI.Domain.Interfaces.Service;
+using MinimalAPI.Domain.Models;
+using MinimalAPI.Services;
+
+namespace MinimalAPI.Endpoints
 {
     public static class UserEndpoint
     {
@@ -9,10 +14,12 @@
                 return Results.Ok();
             }).RequireAuthorization();
 
-            app.MapPost("/user", () =>
+            app.MapPost("/user", async ([FromServices] IUserService userService, UserModel userModel) =>
             {
-                return Results.Created();
-            }).RequireAuthorization();
+                var user = await userService.CreateUser(userModel);
+                return Results.Created($"/user/{user.Id}", user);
+            });
+
         }
     }
 }

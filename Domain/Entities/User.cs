@@ -16,7 +16,7 @@ public class User
     [StringLength(50)]
     public string Email { get; set; } = default!;
 
-    [StringLength(10)]
+    [StringLength(255)]
     public string Password { get; set; } = default!;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

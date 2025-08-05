@@ -52,6 +52,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.MapUserEndpoints();
 app.MapCarEndpoints();
+app.MapLoginEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MinimalAPI.Domain.Entities;
+using MinimalAPI.Domain.Interfaces.Service;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace MinimalAPI.Services;
 
-public class JwtService
+public class JwtService : IJwtService
 {
     private readonly IConfiguration _configuration;
 
