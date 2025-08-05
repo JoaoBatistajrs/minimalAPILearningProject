@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using MinimalAPI.Domain.Entities;
 using MinimalAPI.Domain.Interfaces.Repository;
 using MinimalAPI.Domain.Interfaces.Service;
+using MinimalAPI.Domain.Mappers;
+using MinimalAPI.Domain.Models;
+using MinimalAPI.Helper;
 using MinimalAPI.Infrasctructure.DataBase;
 using MinimalAPI.Infrasctructure.Repository;
 using MinimalAPI.Services;
@@ -22,6 +26,8 @@ public static class DependencyInjection
 
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddAutoMapper(cfg => { }, typeof(DomainToModelMapping));
+        services.AddScoped<IValidator<CarModel>, CarModelValidator>();
         services.AddScoped<ICarsService, CarsService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordService, PasswordService>();
