@@ -1,4 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MinimalAPI.Endpoints;
 using MinimalAPI.IoC;
 using MinimalAPI.Services;
@@ -14,7 +15,26 @@ builder.Services.AddServices(builder.Configuration);
 //builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Cars API",
+        Version = "v1",
+        Description = "API to manage cars",
+        Contact = new OpenApiContact
+        {
+            Name = "Joao Batista",
+            Email = "joao.batista.jrs@gmail.com",
+            Url = new Uri("https://github.com/JoaoBatistajrs/")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "MIT",
+            Url = new Uri("https://opensource.org/licenses/MIT")
+        }
+    });
+});
 
 
 // Configure JWT authentication
@@ -49,13 +69,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+//app.MapControllers();
 app.MapUserEndpoints();
 app.MapCarEndpoints();
 app.MapLoginEndpoints();
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.MapControllers();
 
 app.Run();
