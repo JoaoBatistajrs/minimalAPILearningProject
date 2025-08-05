@@ -12,11 +12,13 @@ public class CarsService : ICarsService
 
     private readonly IEntityRepository<Car> _repository;
     private readonly IMapper _mapper;
+    private readonly ICarsRepository _carsRepository;
 
-    public CarsService(IEntityRepository<Car> repository, IMapper mapper)
+    public CarsService(IEntityRepository<Car> repository, IMapper mapper, ICarsRepository carsRepository)
     {
         _repository = repository;
         _mapper = mapper;
+        _carsRepository = carsRepository;
     }
 
     public async Task<Car>? Create(CarModel carModel)
@@ -41,8 +43,11 @@ public class CarsService : ICarsService
 
     public async Task<Car>? GetById(int id)
     {
-        var car = await _repository.GetByIdAsync(id);
-        return car;
+        return await _repository.GetByIdAsync(id);
     }
 
+    public async Task<Car?> Update(int id, CarModel updatedModel)
+    {
+        return await _carsRepository.UpdateAsync(id, updatedModel);
+    }
 }

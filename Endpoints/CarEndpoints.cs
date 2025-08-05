@@ -79,5 +79,30 @@ public static class CarEndpoints
                 return Results.Problem("Unexpected error occurred.", statusCode: 500);
             }
         }).WithTags("Cars").RequireAuthorization();
+
+        app.MapPut("/api/cars/{id}", async (
+            [FromRoute] int id,
+            [FromBody] CarModel updatedModel,
+            [FromServices] ICarsService service,
+            [FromServices] IValidator<CarModel> validator,
+            [FromServices] ILoggerFactory loggerFactory) =>
+        {
+            var logger = loggerFactory.CreateLogger("CarsEndpoint");
+            var validationResult = await validator.ValidateAsync(updatedModel);
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(new
+                {
+                    errors = validationResult.Errors.Select(e => e.ErrorMessage)
+                });
+            }
+            var updatedCar = await service.Update(id, updatedModel);
+            if (updatedCar == null)
+            {
+                logger.LogWarning("Car with id {Id} not found for update", id);
+                return Results.NotFound(new { message = $"Car with id {id} not found." });
+            }
+            return Results.Ok(updatedCar);
+        }).WithTags("Cars").RequireAuthorization();
     }
 }

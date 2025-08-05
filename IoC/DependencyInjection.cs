@@ -20,6 +20,7 @@ public static class DependencyInjection
 
         services.AddScoped<IEntityRepository<Car>, EntityRepository<Car>>();
         services.AddScoped<IEntityRepository<User>, EntityRepository<User>>();
+        services.AddScoped<ICarsRepository, CarsRepository>();
 
         return services;
     }
