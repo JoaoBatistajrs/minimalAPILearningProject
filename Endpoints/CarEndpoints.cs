@@ -16,6 +16,6 @@ public static class CarEndpoints
         {
             var result = await service.GetCarsAsync(make, model, page, pageSize);
             return Results.Ok(result);
-        }).RequireAuthorization();
+        }).WithTags("Cars").RequireAuthorization();
     }
 }

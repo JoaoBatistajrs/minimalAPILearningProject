@@ -30,5 +30,13 @@ namespace MinimalAPI.Services
 
             return await _repository.CreateAsync(user);
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            var result = await _repository.GetPagedAsync(u => u.Email == email, 1, 1)
+                .ContinueWith(task => task.Result.Items.FirstOrDefault());
+
+            return result ?? throw new KeyNotFoundException($"User with email {email} not found.");
+        }
     }
 }
