@@ -2,8 +2,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MinimalAPI.Endpoints;
 using MinimalAPI.IoC;
+using MinimalAPI.Middlewares;
 using MinimalAPI.Services;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfraStrucuture(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
 
-//builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -32,6 +33,31 @@ builder.Services.AddSwaggerGen(options =>
         {
             Name = "MIT",
             Url = new Uri("https://opensource.org/licenses/MIT")
+        }
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Insira o token JWT no formato: Bearer {seu token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
         }
     });
 });
@@ -62,18 +88,21 @@ builder.Services.AddSingleton<JwtService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.MapControllers();
+// Endpoints
 app.MapUserEndpoints();
 app.MapCarEndpoints();
 app.MapLoginEndpoints();
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();
