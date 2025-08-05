@@ -41,7 +41,8 @@ public class CarsService : ICarsService
 
     public async Task<Car>? GetById(int id)
     {
-        throw new NotImplementedException();
+        var car = await _repository.GetByIdAsync(id);
+        return car;
     }
 
 }

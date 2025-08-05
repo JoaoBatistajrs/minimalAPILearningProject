@@ -21,6 +21,24 @@ public static class CarEndpoints
             return Results.Ok(result);
         }).WithTags("Cars").RequireAuthorization();
 
+        app.MapGet("/api/cars/{id}", async (
+            [FromRoute] int id,
+            [FromServices] ICarsService service,
+            [FromServices] ILoggerFactory loggerFactory) =>
+        {
+            var logger = loggerFactory.CreateLogger("CarsEndpoint");
+
+            var car = await service.GetById(id);
+
+            if (car == null)
+            {
+                logger.LogWarning("Car with id {Id} not found", id);
+                return Results.NotFound(new { message = $"Car with id {id} not found." });
+            }
+
+            return Results.Ok(car);
+        }).WithTags("Cars").RequireAuthorization();
+
         app.MapPost("/api/cars", async (
             [FromServices] ICarsService service,
             [FromServices] IValidator<CarModel> validator,
@@ -60,8 +78,6 @@ public static class CarEndpoints
                 logger.LogError(ex, "Unexpected error while creating car");
                 return Results.Problem("Unexpected error occurred.", statusCode: 500);
             }
-        })
-        .WithTags("Cars")
-        .RequireAuthorization();
+        }).WithTags("Cars").RequireAuthorization();
     }
 }
