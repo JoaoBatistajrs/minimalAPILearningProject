@@ -10,7 +10,11 @@ public static class CarEndpoints
 {
     public static void MapCarEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/cars", async (
+        var group = app.MapGroup("/api/cars")
+                       .WithTags("Cars")
+                       .RequireAuthorization();
+
+        group.MapGet("", async (
             [FromServices] ICarsService service,
             [FromQuery] string? make,
             [FromQuery] string? model,
@@ -19,9 +23,9 @@ public static class CarEndpoints
         {
             var result = await service.GetCarsAsync(make, model, page, pageSize);
             return Results.Ok(result);
-        }).WithTags("Cars").RequireAuthorization();
+        });
 
-        app.MapGet("/api/cars/{id}", async (
+        group.MapGet("/{id}", async (
             [FromRoute] int id,
             [FromServices] ICarsService service,
             [FromServices] ILoggerFactory loggerFactory) =>
@@ -37,9 +41,9 @@ public static class CarEndpoints
             }
 
             return Results.Ok(car);
-        }).WithTags("Cars").RequireAuthorization();
+        });
 
-        app.MapPost("/api/cars", async (
+        group.MapPost("", async (
             [FromServices] ICarsService service,
             [FromServices] IValidator<CarModel> validator,
             [FromServices] ILoggerFactory loggerFactory,
@@ -78,9 +82,9 @@ public static class CarEndpoints
                 logger.LogError(ex, "Unexpected error while creating car");
                 return Results.Problem("Unexpected error occurred.", statusCode: 500);
             }
-        }).WithTags("Cars").RequireAuthorization();
+        });
 
-        app.MapPut("/api/cars/{id}", async (
+        group.MapPut("/{id}", async (
             [FromRoute] int id,
             [FromBody] CarModel updatedModel,
             [FromServices] ICarsService service,
@@ -88,6 +92,7 @@ public static class CarEndpoints
             [FromServices] ILoggerFactory loggerFactory) =>
         {
             var logger = loggerFactory.CreateLogger("CarsEndpoint");
+
             var validationResult = await validator.ValidateAsync(updatedModel);
             if (!validationResult.IsValid)
             {
@@ -96,13 +101,15 @@ public static class CarEndpoints
                     errors = validationResult.Errors.Select(e => e.ErrorMessage)
                 });
             }
+
             var updatedCar = await service.Update(id, updatedModel);
             if (updatedCar == null)
             {
                 logger.LogWarning("Car with id {Id} not found for update", id);
                 return Results.NotFound(new { message = $"Car with id {id} not found." });
             }
+
             return Results.Ok(updatedCar);
-        }).WithTags("Cars").RequireAuthorization();
+        });
     }
 }

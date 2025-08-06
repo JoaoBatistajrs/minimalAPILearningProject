@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MinimalAPI.Domain.Interfaces.Service;
 using MinimalAPI.Domain.Models;
+using System.Security.Claims;
 
 namespace MinimalAPI.Endpoints
 {
@@ -8,17 +10,29 @@ namespace MinimalAPI.Endpoints
     {
         public static void MapUserEndpoints(this IEndpointRouteBuilder app)
         {
-            app.MapGet("/users", () =>
-            {
-                return Results.Ok();
-            }).WithTags("Users").RequireAuthorization();
+            var userGroup = app.MapGroup("/user")
+                               .WithTags("Users")
+                               .RequireAuthorization(); // Requer autenticação para todos
 
-            app.MapPost("/user", async ([FromServices] IUserService userService, UserModel userModel) =>
+            userGroup.MapPost("/create", [Authorize(Roles = "Adm,User")] async (
+                [FromServices] IUserService userService,
+                UserModel userModel) =>
             {
                 var user = await userService.CreateUser(userModel);
                 return Results.Created($"/user/{user.Id}", user);
-            }).WithTags("Users");
+            });
 
+            userGroup.MapPost("/admin/create", [Authorize(Roles = "Adm")] async (
+                [FromServices] IUserService userService,
+                [FromBody] AdminCreateUserModel userModel,
+                ClaimsPrincipal userClaims) =>
+            {
+                if (!userClaims.IsInRole("Adm"))
+                    return Results.Forbid();
+
+                var user = await userService.CreateAdminUser(userModel);
+                return Results.Created($"/user/{user.Id}", user);
+            });
         }
     }
 }

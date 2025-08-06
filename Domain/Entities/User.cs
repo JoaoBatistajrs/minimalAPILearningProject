@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MinimalAPI.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MinimalAPI.Domain.Entities;
@@ -18,6 +19,9 @@ public class User
 
     [StringLength(255)]
     public string Password { get; set; } = default!;
+
+    [Required]
+    public UserRole Role { get; set; } = UserRole.User;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

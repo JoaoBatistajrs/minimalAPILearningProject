@@ -1,4 +1,5 @@
 ﻿using MinimalAPI.Domain.Entities;
+using MinimalAPI.Domain.Enums;
 using MinimalAPI.Domain.Interfaces.Repository;
 using MinimalAPI.Domain.Interfaces.Service;
 using MinimalAPI.Domain.Models;
@@ -22,11 +23,24 @@ namespace MinimalAPI.Services
             {
                 Name = userModel.Name,
                 Email = userModel.Email,
-                CreatedAt = DateTime.UtcNow,    
-                UpdatedAt = DateTime.UtcNow
+                Role = UserRole.User
             };
 
             user.Password = _passwordService.HashPassword(user, userModel.Password);
+
+            return await _repository.CreateAsync(user);
+        }
+
+        public async Task<User> CreateAdminUser(AdminCreateUserModel adminUserModel)
+        {
+            var user = new User
+            {
+                Name = adminUserModel.Name,
+                Email = adminUserModel.Email,
+                Role = UserRole.Adm
+            };
+
+            user.Password = _passwordService.HashPassword(user, adminUserModel.Password);
 
             return await _repository.CreateAsync(user);
         }
