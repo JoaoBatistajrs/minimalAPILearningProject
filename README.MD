@@ -2,6 +2,21 @@
 
 This repository contains a minimal .NET API project with a clean architecture, including domain models, endpoints, services, infrastructure, and comprehensive tests. Below is a detailed overview of the project structure and its main components.
 
+
+## Technologies Used
+
+- [.NET 9](https://dotnet.microsoft.com/)
+- Entity Framework Core
+- JWT (JSON Web Token)
+- FluentValidation
+- AutoMapper
+- Swagger/OpenAPI
+- SQLite or PostgreSQL (configurable)
+- User Secrets (for sensitive data)
+- Custom Middlewares
+
+---
+
 ## Project Structure
 
 ```
@@ -87,6 +102,25 @@ Tests/                        # Test project
 ### Prerequisites
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - SQL Server (or update connection string in `appsettings.json`)
+
+## JWT Configuration
+
+Configure the keys in `appsettings.json` **or via User Secrets**:
+
+```json
+"JwtSettings": {
+  "SecretKey": "your-strong-secret-key",
+  "Issuer": "CarApiIssuer",
+  "Audience": "CarApiUsers",
+  "ExpiresInMinutes": 60
+}
+```
+
+```user-secrets
+
+dotnet user-secrets init
+dotnet user-secrets set "JwtSettings:SecretKey" "your-secret"
+```
 
 ### Running the API
 1. Restore dependencies:
