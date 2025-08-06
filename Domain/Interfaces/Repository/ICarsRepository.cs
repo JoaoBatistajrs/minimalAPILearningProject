@@ -1,10 +1,9 @@
 ﻿using MinimalAPI.Domain.Entities;
 using MinimalAPI.Domain.Models;
 
-namespace MinimalAPI.Domain.Interfaces.Repository
+namespace MinimalAPI.Domain.Interfaces.Repository;
+
+public interface ICarsRepository
 {
-    public interface ICarsRepository
-    {
-        Task<Car?> UpdateAsync(int id, CarModel updatedModel);
-    }
+    Task<Car?> UpdateAsync(int id, CarModel updatedModel);
 }

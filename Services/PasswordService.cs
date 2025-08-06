@@ -2,21 +2,20 @@
 using MinimalAPI.Domain.Entities;
 using MinimalAPI.Domain.Interfaces.Service;
 
-namespace MinimalAPI.Services
+namespace MinimalAPI.Services;
+
+public class PasswordService : IPasswordService
 {
-    public class PasswordService : IPasswordService
+    private readonly PasswordHasher<User> _passwordHasher = new();
+
+    public string HashPassword(User user, string password)
     {
-        private readonly PasswordHasher<User> _passwordHasher = new();
+        return _passwordHasher.HashPassword(user, password);
+    }
 
-        public string HashPassword(User user, string password)
-        {
-            return _passwordHasher.HashPassword(user, password);
-        }
-
-        public bool VerifyPassword(User user, string password)
-        {
-            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
-            return result == PasswordVerificationResult.Success;
-        }
+    public bool VerifyPassword(User user, string password)
+    {
+        var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+        return result == PasswordVerificationResult.Success;
     }
 }

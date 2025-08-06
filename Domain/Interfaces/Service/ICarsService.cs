@@ -9,6 +9,4 @@ public interface ICarsService
     Task<PagedResult<Car>> GetCarsAsync(string? make, string? model, int page, int pageSize);
     Task<Car>? GetById(int id);
     Task<Car?> Update(int id, CarModel updatedModel);
-
-
 }
