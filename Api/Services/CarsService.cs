@@ -13,6 +13,7 @@ public class CarsService : ICarsService
     private readonly IEntityRepository<Car> _repository;
     private readonly IMapper _mapper;
     private readonly ICarsRepository _carsRepository;
+    private IEntityRepository<Car> @object;
 
     public CarsService(IEntityRepository<Car> repository, IMapper mapper, ICarsRepository carsRepository)
     {

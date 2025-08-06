@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinimalAPI.Domain.Interfaces.Service;
@@ -14,7 +15,7 @@ public static class CarEndpoints
                        .WithTags("Cars")
                        .RequireAuthorization();
 
-        group.MapGet("", async (
+        group.MapGet("", [Authorize(Roles = "Adm,User")] async (
             [FromServices] ICarsService service,
             [FromQuery] string? make,
             [FromQuery] string? model,
@@ -25,7 +26,7 @@ public static class CarEndpoints
             return Results.Ok(result);
         });
 
-        group.MapGet("/{id}", async (
+        group.MapGet("/{id}", [Authorize(Roles = "Adm,User")] async (
             [FromRoute] int id,
             [FromServices] ICarsService service,
             [FromServices] ILoggerFactory loggerFactory) =>
@@ -43,7 +44,7 @@ public static class CarEndpoints
             return Results.Ok(car);
         });
 
-        group.MapPost("", async (
+        group.MapPost("", [Authorize(Roles = "Adm,User")] async (
             [FromServices] ICarsService service,
             [FromServices] IValidator<CarModel> validator,
             [FromServices] ILoggerFactory loggerFactory,
@@ -84,7 +85,7 @@ public static class CarEndpoints
             }
         });
 
-        group.MapPut("/{id}", async (
+        group.MapPut("/{id}", [Authorize(Roles = "Adm")] async (
             [FromRoute] int id,
             [FromBody] CarModel updatedModel,
             [FromServices] ICarsService service,

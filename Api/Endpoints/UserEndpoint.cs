@@ -12,7 +12,7 @@ namespace MinimalAPI.Endpoints
         {
             var userGroup = app.MapGroup("/user")
                                .WithTags("Users")
-                               .RequireAuthorization(); // Requer autenticação para todos
+                               .RequireAuthorization();
 
             userGroup.MapPost("/create", [Authorize(Roles = "Adm,User")] async (
                 [FromServices] IUserService userService,
